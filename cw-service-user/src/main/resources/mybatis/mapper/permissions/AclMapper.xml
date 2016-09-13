@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.cnsjwx.facade.permissions.entity.AclMapper">
+	<resultMap id="BaseResultMap" type="cn.cnsjwx.facade.permissions.entity.Acl">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="principalType" property="principalType" jdbcType="VARCHAR" />
+		<result column="principalId" property="principalId" jdbcType="VARCHAR" />
+		<result column="resourceType" property="resourceType" jdbcType="VARCHAR" />
+		<result column="resourceId" property="resourceId" jdbcType="VARCHAR" />
+		<result column="aclState" property="aclState" jdbcType="INTEGER" />
+		<result column="aclTriState" property="aclTriState" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,principalType,principalId,resourceType,resourceId,aclState,aclTriState
+	</sql>
+
+	<!-- web -->
+	<select id="findAcl" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_acl where 1=1 
+		and principalType = #{principalType} 
+		and principalId = #{principalId} 
+		and resourceType = #{resourceType} 
+		and resourceId = #{resourceId}
+	</select>
+	
+	<insert id="insert" parameterType="cn.cnsjwx.facade.permissions.entity.Acl">
+		insert into t_acl
+		(id,principalType,principalId,resourceType,resourceId,aclState,aclTriState)
+		values
+		(#{id,jdbcType=VARCHAR},
+		#{principalType,jdbcType=VARCHAR},#{principalId,jdbcType=VARCHAR},
+		#{resourceType,jdbcType=VARCHAR},#{resourceId,jdbcType=VARCHAR},
+		#{aclState,jdbcType=INTEGER},#{aclTriState,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="update" parameterType="cn.cnsjwx.facade.permissions.entity.Acl">
+		update t_acl set
+				principalType = #{principalType,jdbcType=VARCHAR},
+				principalId = #{principalId,jdbcType=VARCHAR},
+				resourceType = #{resourceType,jdbcType=VARCHAR},
+				resourceId = #{resourceId,jdbcType=VARCHAR},
+				aclState = #{aclState,jdbcType=INTEGER},
+				aclTriState = #{aclTriState,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<delete id="delAcls" parameterType="cn.cnsjwx.facade.permissions.entity.Acl">
+		delete from t_acl 
+		where 1 = 1
+		and principalType = #{principalType,jdbcType=VARCHAR}
+		and principalId = #{principalId,jdbcType=VARCHAR}
+		and resourceType = #{resourceType,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="findAclByPrincipalId" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List" />
+		from t_acl where 1=1 
+		and principalType = #{principalType} 
+		and principalId = #{principalId} 
+		and resourceType = #{resourceType}
+		and aclState = #{aclState}
+	</select>
+</mapper>

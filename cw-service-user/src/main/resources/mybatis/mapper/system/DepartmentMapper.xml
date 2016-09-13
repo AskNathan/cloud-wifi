@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.cnsjwx.facade.system.entity.DepartmentMapper">
+	<resultMap id="BaseResultMap" type="cn.cnsjwx.facade.system.entity.Department">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="description" property="desc" jdbcType="VARCHAR" />
+		<result column="orderNum" property="order" jdbcType="INTEGER" />
+		<result column="datetime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="pid" property="pid" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,name,description,orderNum,datetime,pid,company_id
+	</sql>
+
+	<!-- public -->
+	<select id="findDepartmentById" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_department where 1=1
+		and id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findDepartmentByCompanyId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_department where 1=1 and company_id =
+		#{companyId,jdbcType=VARCHAR}
+	</select>
+
+	<!-- app -->
+
+	<!-- web -->
+	<insert id="insert" parameterType="cn.cnsjwx.facade.system.entity.Department">
+		insert into t_department
+		(id,name,description,orderNum,datetime,pid,company_id)
+		values
+		(#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
+		#{desc,jdbcType=VARCHAR},
+		#{order,jdbcType=INTEGER},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{pid,jdbcType=VARCHAR},
+		#{companyId,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="cn.cnsjwx.facade.system.entity.Department">
+		update t_department
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="desc != null">
+				description = #{desc,jdbcType=VARCHAR},
+			</if>
+			<if test="order != null">
+				orderNum = #{order,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				datetime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pid != null">
+				pid = #{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="companyId != null">
+				company_id = #{companyId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<delete id="delByIds" parameterType="java.util.List">
+		delete from t_department where id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+	</delete>
+
+	<select id="findDepartmentByOrder" parameterType="cn.cnsjwx.facade.system.entity.Department"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_department where 1=1
+		and orderNum = #{order,jdbcType=INTEGER}
+		and company_id = #{companyId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findDepartmentByName" parameterType="cn.cnsjwx.facade.system.entity.Department"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_department where 1=1 and company_id = #{companyId,jdbcType=VARCHAR}
+		and name = #{name,jdbcType=VARCHAR}
+	</select>
+	<select id="findNextLevelDepartment" parameterType="cn.cnsjwx.facade.user.entity.UserClient"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_department where
+		1=1
+		and company_id = #{companyId,jdbcType=VARCHAR}
+		and pid = #{departmentId,jdbcType=VARCHAR}
+	</select>
+	<select id="findNextLevelDepartmentByFunction" parameterType="cn.cnsjwx.facade.user.entity.UserClient"
+		resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List" /> 
+		from t_department  where company_id = #{companyId,jdbcType=VARCHAR}
+		and FIND_IN_SET(id, FUN_FINDDEPARTMENTCHILDRENSBYPARENTID(#{departmentId}));
+	</select>
+
+	<select id="findDepartmentByParam" parameterType="cn.cnsjwx.facade.system.vo.DepartmentVo"
+		resultType="cn.cnsjwx.facade.system.vo.DepartmentVo">
+		select
+		d1.id,d1.name,d1.description as 'desc',d1.orderNum as
+		'order',d1.datetime,d1.pid,d2.name as
+		'pName',d1.company_id as 'companyId'
+		from (
+		select
+		<include refid="Base_Column_List" />
+		from t_department where company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="name != null and name !=''">
+			and name like concat(#{name,jdbcType=VARCHAR},'%')
+		</if>
+		order by orderNum asc
+		) d1 LEFT join t_department d2 on d1.pid = d2.id
+	</select>
+
+	<select id="findDepartmentByParam_Count" parameterType="cn.cnsjwx.facade.system.vo.DepartmentVo"
+		resultType="java.lang.Integer">
+		select count(*)
+		from (
+		select
+			<include refid="Base_Column_List" />
+		from t_department where company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="name != null and name !=''">
+			and name like concat(#{name,jdbcType=VARCHAR},'%')
+		</if>
+		order by orderNum asc
+		) d1 LEFT join t_department d2 on d1.pid = d2.id
+	</select>
+</mapper>

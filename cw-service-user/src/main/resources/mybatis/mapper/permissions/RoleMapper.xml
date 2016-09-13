@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.cnsjwx.facade.permissions.entity.RoleMapper">
+	<resultMap id="BaseResultMap" type="cn.cnsjwx.facade.permissions.entity.Role">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="datetime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,code,name,datetime,company_id
+	</sql>
+
+	<!-- web -->
+	<insert id="insert" parameterType="cn.cnsjwx.facade.permissions.entity.Role">
+		insert into t_role
+		(id,name,code,datetime,company_id)
+		values
+		(#{id,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{code,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{companyId,jdbcType=VARCHAR})
+	</insert>
+	<update id="update" parameterType="cn.cnsjwx.facade.permissions.entity.Role">
+		update t_role
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				datetime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="companyId != null">
+				company_id = #{companyId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="delByIds" parameterType="java.util.List">
+		delete from t_role where id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<select id="findRoleByCode" parameterType="cn.cnsjwx.facade.permissions.entity.Role"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_role where 1=1
+		and code = #{code,jdbcType=VARCHAR}
+		and company_id =
+		#{companyId,jdbcType=VARCHAR}
+	</select>
+	<select id="findRoleByName" parameterType="cn.cnsjwx.facade.permissions.entity.Role"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_role where 1=1
+		and name = #{name,jdbcType=VARCHAR}
+		and company_id
+		= #{companyId,jdbcType=VARCHAR}
+	</select>
+	<select id="findRoleByCompanyId" parameterType="cn.cnsjwx.facade.permissions.entity.Role"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_role where 1=1
+		and company_id = #{companyId ,jdbcType=VARCHAR}
+		<if test="name != null and name != ''">
+			and name like '${name}%'
+		</if>
+	</select>
+	<select id="findRoleByParam" parameterType="cn.cnsjwx.facade.permissions.entity.Role"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_role where 1=1
+		and company_id = #{companyId ,jdbcType=VARCHAR}
+		<if test="name != null and name != ''">
+			and name like '${name}%'
+		</if>
+	</select>
+	<select id="findRoleByParam_Count" parameterType="cn.cnsjwx.facade.permissions.entity.Role"
+		resultType="java.lang.Integer">
+		select count(*)
+		from t_role where 1=1
+		and company_id = #{companyId ,jdbcType=VARCHAR}
+		<if test="name != null and name != ''">
+			and name like '${name}%'
+		</if>
+	</select>
+
+</mapper>

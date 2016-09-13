@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.cnsjwx.facade.system.entity.CompanyMapper">
+	<resultMap id="BaseResultMap" type="cn.cnsjwx.facade.system.entity.Company">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="enable" property="enable" jdbcType="INTEGER" />
+		<result column="tryStatus" property="tryStatus" jdbcType="INTEGER" />
+		<result column="effDate" property="effDate" jdbcType="TIMESTAMP" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="datetime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="pid" property="pid" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,name,code,enable,tryStatus,effDate,remark,datetime,pid
+	</sql>
+
+	<!-- public -->
+	<select id="findCompanyById" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_company
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<!-- app -->
+
+	<!-- web -->
+	<insert id="insert" parameterType="cn.cnsjwx.facade.system.entity.Company">
+		insert into t_company
+		(id,name,code,enable,tryStatus,effDate,remark,datetime,pid)
+		values
+		(#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
+		#{code,jdbcType=VARCHAR},#{enable,jdbcType=INTEGER},
+		#{tryStatus,jdbcType=INTEGER},
+		#{effDate,jdbcType=TIMESTAMP},#{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{pid,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="cn.cnsjwx.facade.system.entity.Company">
+		update t_company
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="enable != null">
+				enable = #{enable,jdbcType=INTEGER},
+			</if>
+			<if test="tryStatus != null">
+				tryStatus = #{tryStatus,jdbcType=INTEGER},
+			</if>
+			<if test="effDate != null">
+				effDate = #{effDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				datetime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pid != null">
+				pid = #{pid,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 根据企业编码更改可用状态 -->
+	<update id="updateEnableByCode" parameterType="cn.cnsjwx.facade.system.entity.Company">
+		update t_company
+		<set>
+			<if test="enable != null">
+				enable = #{enable,jdbcType=INTEGER},
+			</if>
+		</set>
+		where code = #{code,jdbcType=VARCHAR}
+	</update>
+
+	<delete id="delByIds" parameterType="java.util.List">
+		delete from t_company where id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<delete id="delById" parameterType="java.lang.String">
+		delete from t_company where
+		id = #{id,jdbcType=VARCHAR}
+	</delete>
+
+	<select id="findCompanyByParam" parameterType="cn.cnsjwx.facade.system.entity.Company"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_company where 1=1
+		<if test="name != null and name !=''">
+			and name like concat(#{name,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="code != null and code !=''">
+			and code like concat(#{code,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="tryStatus != null">
+			and tryStatus = #{tryStatus,jdbcType=INTEGER}
+		</if>
+	</select>
+	<select id="findCompanyByParam_Count" parameterType="cn.cnsjwx.facade.system.entity.Company"
+		resultType="java.lang.Integer">
+		select count(id) from t_company where 1=1
+		<if test="name != null and name !=''">
+			and name like concat(#{name,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="code != null and code !=''">
+			and code like concat(#{code,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="tryStatus != null">
+			and tryStatus = #{tryStatus,jdbcType=INTEGER}
+		</if>
+	</select>
+	<select id="findCompanyByCode" parameterType="cn.cnsjwx.facade.system.entity.Company"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_company where 1=1
+		<if test="code != null and code != ''">
+			and code = #{code,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="findAllCompany" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_company
+	</select>
+</mapper>

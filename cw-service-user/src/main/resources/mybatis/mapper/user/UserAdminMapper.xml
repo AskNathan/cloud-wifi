@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.cnsjwx.facade.user.entity.UserAdminMapper">
+	<resultMap id="BaseResultMap" type="cn.cnsjwx.facade.user.entity.UserAdmin">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="position" property="position" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="datetime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="role_id" property="roleId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,loginname,password,username,email,phone,position,status,`type`,datetime,company_id,role_id
+	</sql>
+
+	<!-- public -->
+
+	<!-- app -->
+
+	<!-- web -->
+	<insert id="insert" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin">
+		insert into t_user_admin
+		(id,loginname,password,username,email,phone,position,status,`type`,datetime,company_id,role_id)
+		values
+		(#{id,jdbcType=VARCHAR},
+		#{loginname,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{username,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{position,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER},
+		#{type,jdbcType=INTEGER},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{companyId,jdbcType=VARCHAR},#{roleId,jdbcType=VARCHAR})
+	</insert>
+	<update id="update" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin">
+		update t_user_admin
+		<set>
+			<if test="loginname != null">
+				loginname = #{loginname,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="position != null">
+				position = #{position,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				`type` = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				datetime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="companyId != null">
+				company_id = #{companyId,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByCompanyId" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin">
+		update t_user_admin
+		<set>
+			<if test="loginname != null">
+				loginname = #{loginname,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="position != null">
+				position = #{position,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				`type` = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				datetime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where company_id = #{companyId,jdbcType=VARCHAR}
+	</update>
+	<!-- 根据RoleID和 CompanyID更新企业启用状态-->
+	<update id="updateStatusByRoleIDAndCompanyID" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin">
+		update t_user_admin
+		<set>
+			<if test="loginname != null">
+				loginname = #{loginname,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="roleId != null">
+			and role_id = #{roleId,jdbcType=VARCHAR}
+		</if>
+		<if test="type != null">
+			and type = #{type,jdbcType=INTEGER}
+		</if>
+	</update>
+	<delete id="delByIds" parameterType="java.util.List">
+		delete from t_user_admin where id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<delete id="delById" parameterType="java.lang.String">
+		delete from t_user_admin
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="findUserAdminById" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where 1=1 and id = #{id,jdbcType=VARCHAR}
+	</select>
+	<select id="findUserAdminByCompanyId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where 1=1 and company_id =
+		#{companyId,jdbcType=INTEGER} and role_id = 2
+	</select>
+	<select id="findUserAdminByLoginname" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where 1=1
+		and loginname = #{loginname}
+	</select>
+	<!-- 企业超管登陆名称超管内唯一 -->
+	<select id="checkLoginnameInComAdmin" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where 1=1
+		and loginname = #{loginname} and role_id = 2
+	</select>
+	<!-- 根据loginname,companyId,可选的type，可选的roleId获取要更新的超管 -->
+	<select id="findSuperUAByCompanyIdAndType" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where company_id = ${companyId}
+		and loginname = #{loginname}
+		<if test="roleId != null">
+			 and role_id = ${roleId}
+		</if> 
+		<if test="type != null">
+			and `type` = ${type}
+		</if>
+		order by datetime asc limit 1
+	</select>
+	<!-- 企业管理员登陆名称企业内唯一 -->
+	<select id="checkLoginnameInCompany" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_admin where 1=1
+		and loginname = #{loginname} and company_id = #{companyId}
+	</select>
+
+	<select id="findUserAdminVoByParam" parameterType="cn.cnsjwx.facade.user.vo.UserAdminVo"
+		resultType="cn.cnsjwx.facade.user.vo.UserAdminVo">
+		SELECT
+		u.id,u.loginname,u.username,u.email,u.phone,u.status,u.type,u.datetime,u.position,
+		c.id as companyId,c.name as companyName,r.id as roleId,r.name as
+		roleName
+		FROM t_user_admin u,t_company c ,t_role r where 1 = 1
+		and u.company_id=c.id
+		and u.role_id=r.id and r.code = 'InterCompManager'
+		<if test="loginname != null and loginname != ''">
+			and u.loginname like '${loginname}%'
+		</if>
+		<if test="email != null and email != ''">
+			and u.email like '${email}%'
+		</if>
+		<if test="companyName != null and companyName != ''">
+			and c.name like '${companyName}%'
+		</if>
+	</select>
+	<select id="findUserAdminVoByParam_Count" parameterType="cn.cnsjwx.facade.user.vo.UserAdminVo"
+		resultType="java.lang.Integer">
+		SELECT count(u.id)
+		FROM t_user_admin u,t_company c ,t_role r where 1 = 1
+		and u.company_id=c.id
+		and u.role_id=r.id and r.code = 'InterCompManager'
+		<if test="loginname != null and loginname != ''">
+			and u.loginname like '${loginname}%'
+		</if>
+		<if test="email != null and email != ''">
+			and u.email like '${email}%'
+		</if>
+		<if test="companyName != null and companyName != ''">
+			and c.name like '${companyName}%'
+		</if>
+	</select>
+
+	<select id="findUserAdminByParam" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin"
+		resultType="cn.cnsjwx.facade.user.entity.UserAdmin">
+		SELECT
+		id,loginname,username,email,phone,position,status,`type`,datetime,company_id
+		as companyId,role_id as roleId
+		from t_user_admin where 1=1
+		and company_id = #{companyId} and id != #{id} and role_id not in (1,2,3)
+		<if test="loginname != null and loginname != ''">
+			and loginname like '${loginname}%'
+		</if>
+		<if test="username != null and username != ''">
+			and username like '${username}%'
+		</if>
+	</select>
+	<select id="findUserAdminByParam_Count" parameterType="cn.cnsjwx.facade.user.entity.UserAdmin"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		from t_user_admin where 1=1
+		and company_id = #{companyId} and id != #{id} and role_id not in (1,2,3)
+		<if test="loginname != null and loginname != ''">
+			and loginname like '${loginname}%'
+		</if>
+		<if test="username != null and username != ''">
+			and username like '${username}%'
+		</if>
+	</select>
+</mapper>
