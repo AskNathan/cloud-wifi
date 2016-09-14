@@ -212,7 +212,14 @@
         <dependency>
             <groupId>org.csource</groupId>
             <artifactId>fastdfs-client</artifactId>
+            <version>${fastdfs-client.version}</version>
         </dependency>
+        <!--<dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>1.25.2-RELEASE</version>
+        </dependency>-->
+
 
         <dependency>
             <groupId>org.jsoup</groupId>

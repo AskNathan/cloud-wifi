@@ -27,7 +27,7 @@
     </profiles>
 
 
-    <distributionManagement>
+   <!-- <distributionManagement>
         <repository>
             <id>sjwx-releases</id>
             <name>Nexus Release Repository</name>
@@ -38,7 +38,7 @@
             <name>Nexus Snapshot Repository</name>
             <url>http://192.168.75.13:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <properties>
 
